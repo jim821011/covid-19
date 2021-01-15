@@ -155,55 +155,15 @@
           </select>
         </div>
         <section class="mt-4">
-          <div class="board-card mb-3 p-3"
-            v-for="item in covidDataFilter[currentPage]" :key="item.CountryCode">
-            <h3 class="board-card-title-2 mb-3">{{ item.Country }} ({{ item.CountryCode }})</h3>
-            <div class="attaction-icon">
-              <a href="#" class="">
-                <i class="fas fa-paperclip fa-2x text-secondary"></i>
-              </a>
-            </div>
-            <div class="board-card-body p-3 p-md-4 text-center">
-              <div class="row">
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                  <span class="text-secondary mb-1 d-block">新增確診</span>
-                  <div class="board-card-body-item">
-                    <i class="fas fa-head-side-mask fa-2x area-icon"></i>
-                    <span class="ml-2 text-danger font-weight-bolder">
-                      {{ item.NewConfirmed | CurrencyFilter }}
-                    </span>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                  <span class="text-secondary mb-1 d-block">新增死亡</span>
-                  <div class="board-card-body-item">
-                    <i class="fas fa-skull-crossbones fa-2x area-icon"></i>
-                    <span class="ml-2 text-danger font-weight-bolder">
-                      {{ item.NewDeaths | CurrencyFilter }}
-                    </span>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3">
-                  <span class="text-secondary mb-1 d-block">累計確診</span>
-                  <div class="board-card-body-item">
-                    <i class="fas fa-head-side-mask fa-2x area-icon"></i>
-                    <span class="ml-2 text-danger font-weight-bolder">
-                      {{ item.TotalConfirmed | CurrencyFilter }}
-                    </span>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3">
-                  <span class="text-secondary mb-1 d-block">累計死亡</span>
-                  <div class="board-card-body-item">
-                    <i class="fas fa-skull-crossbones fa-2x area-icon"></i>
-                    <span class="ml-2 text-danger font-weight-bolder">
-                      {{ item.TotalDeaths | CurrencyFilter }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h3 v-if="covidDataAttention.length" class="area-title mb-3">關注國家</h3>
+          <AttentionArea
+            :covidArr="covidDataAttention"
+            @set-attention="setAttention" />
+          <h3 class="area-title mb-3">各國資訊</h3>
+          <AreaDetail
+            :covidArr="covidDataFilter"
+            :page="currentPage"
+            @set-attention="setAttention" />
           <paginate :page-count="covidDataFilter.length"
             :page-range=3
             :margin-pages=1
@@ -227,8 +187,14 @@
 
 <script>
 import $ from 'jquery';
+import AreaDetail from '@/components/AreaDetail.vue';
+import AttentionArea from '@/components/AttentionArea.vue';
 
 export default {
+  components: {
+    AreaDetail,
+    AttentionArea,
+  },
   data() {
     return {
       covidData: [],
@@ -237,6 +203,7 @@ export default {
       page: 10,
       currentPage: 0,
       selection: '',
+      attentionArr: JSON.parse(localStorage.getItem('country')) || [],
       chartOptions: {
         chart: {
           id: 'covid-19-chart',
@@ -267,23 +234,29 @@ export default {
     },
     covidDataFilter() {
       const vm = this;
+      const dataArr = [...vm.covidData];
       const filterArr = [];
       let sortArr = [];
       switch (vm.selection) {
         case 'newConfirmed':
-          sortArr = vm.covidData.sort((a, b) => (b.NewConfirmed > a.NewConfirmed ? 1 : -1));
+          sortArr = dataArr
+            .sort((a, b) => (b.NewConfirmed > a.NewConfirmed ? 1 : -1));
           break;
         case 'totalConfirmed':
-          sortArr = vm.covidData.sort((a, b) => (b.TotalConfirmed > a.TotalConfirmed ? 1 : -1));
+          sortArr = dataArr
+            .sort((a, b) => (b.TotalConfirmed > a.TotalConfirmed ? 1 : -1));
           break;
         case 'newDeath':
-          sortArr = vm.covidData.sort((a, b) => (b.NewDeaths > a.NewDeaths ? 1 : -1));
+          sortArr = dataArr
+            .sort((a, b) => (b.NewDeaths > a.NewDeaths ? 1 : -1));
           break;
         case 'totalDeath':
-          sortArr = vm.covidData.sort((a, b) => (b.TotalDeaths > a.TotalDeaths ? 1 : -1));
+          sortArr = dataArr
+            .sort((a, b) => (b.TotalDeaths > a.TotalDeaths ? 1 : -1));
           break;
         default:
-          sortArr = vm.covidData.sort((a, b) => (a.Country > b.Country ? 1 : -1));
+          sortArr = dataArr
+            .sort((a, b) => (a.Country > b.Country ? 1 : -1));
           break;
       }
       sortArr.forEach((item, i) => {
@@ -292,6 +265,18 @@ export default {
         }
         const num = Math.floor(i / vm.page);
         filterArr[num].push(item);
+      });
+      return filterArr;
+    },
+    covidDataAttention() {
+      const vm = this;
+      const filterArr = [];
+      vm.attentionArr.forEach((item1) => {
+        vm.covidData.forEach((item2) => {
+          if (item1 === item2.Country) {
+            filterArr.push(item2);
+          }
+        });
       });
       return filterArr;
     },
@@ -353,6 +338,16 @@ export default {
     },
     reload() {
       window.location.reload();
+    },
+    setAttention(county) {
+      const vm = this;
+      const index = vm.attentionArr.indexOf(county);
+      if (index === -1) {
+        vm.attentionArr.push(county);
+      } else {
+        vm.attentionArr.splice(index, 1);
+      }
+      localStorage.setItem('country', JSON.stringify(vm.attentionArr));
     },
   },
 };
