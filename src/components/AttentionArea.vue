@@ -3,7 +3,7 @@
     <div class="board-card mb-3 p-3"
       v-for="item in covidArr" :key="item.CountryCode">
       <h3 class="board-card-title-2 mb-3">{{ item.Country }} ({{ item.CountryCode }})</h3>
-      <div class="attaction-icon">
+      <div class="attaction-icon" title="取消關注">
         <a href="#" @click.prevent="setAttention(item.Country)">
           <i class="fas fa-paperclip fa-2x text-warning"></i>
         </a>
