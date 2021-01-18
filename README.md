@@ -10,7 +10,7 @@
 ## 功能
 
 1. 死亡數長條圖顯示前十大死亡數累計最高的國家
-2. 滑鼠移到長條塗上會顯示該國目前總與亡人數
+2. 滑鼠移到長條圖上會顯示該國目前總死亡人數
 3. 時間部分使用 dayjs 轉換成指定格式
 4. 地區資訊可加入關注，關注國家會至頂顯示
 5. 畫面右側有重新整理的 icon 和至頂的 icon
@@ -27,14 +27,18 @@
 
 ## 相關插件
 
+**過去使用過**
+
 * [vue-axios](https://github.com/imcvampire/vue-axios#readme)
+
+* [bootstrap](https://getbootstrap.com/)
+
+* [JQuery](https://jquery.com/)
+
+**本次重點使用插件**
 
 * [vue-apexcharts](https://github.com/apexcharts/vue-apexcharts)
 
 * [vuejs-paginate](https://www.npmjs.com/package/vuejs-paginate)
 
 * [dayjs](https://github.com/iamkun/dayjs)
-
-* [bootstrap](https://getbootstrap.com/)
-
-* [JQuery](https://jquery.com/)
