@@ -148,10 +148,10 @@
           <h2 class="m-0 font-weight-bolder">地區即時資訊</h2>
           <select class="ml-auto mt-2 mt-md-0 board-select" v-model="selection">
             <option value="" selected>依字母排列</option>
-            <option value="newConfirmed">新增確診 ( 多至少 )</option>
-            <option value="totalConfirmed">累計確診 ( 多至少 )</option>
-            <option value="newDeath">新增死亡 ( 多至少 )</option>
-            <option value="totalDeath">累計死亡 ( 多至少 )</option>
+            <option value="NewConfirmed">新增確診 ( 多至少 )</option>
+            <option value="TotalConfirmed">累計確診 ( 多至少 )</option>
+            <option value="NewDeaths">新增死亡 ( 多至少 )</option>
+            <option value="TotalDeaths">累計死亡 ( 多至少 )</option>
           </select>
         </div>
         <section class="mt-4">
@@ -237,28 +237,35 @@ export default {
       const dataArr = [...vm.covidData];
       const filterArr = [];
       let sortArr = [];
-      switch (vm.selection) {
-        case 'newConfirmed':
-          sortArr = dataArr
-            .sort((a, b) => (b.NewConfirmed > a.NewConfirmed ? 1 : -1));
-          break;
-        case 'totalConfirmed':
-          sortArr = dataArr
-            .sort((a, b) => (b.TotalConfirmed > a.TotalConfirmed ? 1 : -1));
-          break;
-        case 'newDeath':
-          sortArr = dataArr
-            .sort((a, b) => (b.NewDeaths > a.NewDeaths ? 1 : -1));
-          break;
-        case 'totalDeath':
-          sortArr = dataArr
-            .sort((a, b) => (b.TotalDeaths > a.TotalDeaths ? 1 : -1));
-          break;
-        default:
-          sortArr = dataArr
-            .sort((a, b) => (a.Country > b.Country ? 1 : -1));
-          break;
+      if(vm.selection != '') {
+        sortArr = dataArr
+          .sort((a, b) => (b[vm.selection] > a[vm.selection] ? 1 : -1));
+      }else {
+        sortArr = dataArr
+          .sort((a, b) => (a.Country > b.Country ? 1 : -1));
       }
+      // switch (vm.selection) {
+      //   case 'NewConfirmed':
+      //     sortArr = dataArr
+      //       .sort((a, b) => (b.NewConfirmed > a.NewConfirmed ? 1 : -1));
+      //     break;
+      //   case 'TotalConfirmed':
+      //     sortArr = dataArr
+      //       .sort((a, b) => (b.TotalConfirmed > a.TotalConfirmed ? 1 : -1));
+      //     break;
+      //   case 'NewDeaths':
+      //     sortArr = dataArr
+      //       .sort((a, b) => (b.NewDeaths > a.NewDeaths ? 1 : -1));
+      //     break;
+      //   case 'TotalDeaths':
+      //     sortArr = dataArr
+      //       .sort((a, b) => (b.TotalDeaths > a.TotalDeaths ? 1 : -1));
+      //     break;
+      //   default:
+      //     sortArr = dataArr
+      //       .sort((a, b) => (a.Country > b.Country ? 1 : -1));
+      //     break;
+      // }
       sortArr.forEach((item, i) => {
         if (i % vm.page === 0) {
           filterArr.push([]);
