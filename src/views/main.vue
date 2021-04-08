@@ -2,6 +2,7 @@
   <div>
     <a href="#" class="go-top" @click.prevent="goTop" title="回到頂端">
       <i class="fas fa-arrow-up"></i>
+      <span>123</span>
     </a>
     <a href="#" class="reload-icon" @click.prevent="reload" title="更新資料">
       <i class="fas fa-sync-alt"></i>
@@ -237,10 +238,10 @@ export default {
       const dataArr = [...vm.covidData];
       const filterArr = [];
       let sortArr = [];
-      if(vm.selection != '') {
+      if (vm.selection !== '') {
         sortArr = dataArr
           .sort((a, b) => (b[vm.selection] > a[vm.selection] ? 1 : -1));
-      }else {
+      } else {
         sortArr = dataArr
           .sort((a, b) => (a.Country > b.Country ? 1 : -1));
       }
