@@ -2,7 +2,6 @@
   <div>
     <a href="#" class="go-top" @click.prevent="goTop" title="回到頂端">
       <i class="fas fa-arrow-up"></i>
-      <span>123</span>
     </a>
     <a href="#" class="reload-icon" @click.prevent="reload" title="更新資料">
       <i class="fas fa-sync-alt"></i>
